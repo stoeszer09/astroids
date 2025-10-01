@@ -7,6 +7,7 @@ class Player(CircleShape):
   def __init__(self, x, y):
     super().__init__(x, y, PLAYER_RADIUS)
     self.rotation = 0
+    self.PLAYER_SHOOT_COOLDOWN = 0
   
   # in the player class
   def triangle(self):
@@ -34,8 +35,10 @@ class Player(CircleShape):
         self.move(dt)
       if keys[pygame.K_s]:
         self.move(-dt)
-      if keys[pygame.K_SPACE]:
+      if keys[pygame.K_SPACE] and self.PLAYER_SHOOT_COOLDOWN <= 0:
         self.shoot()
+      
+      self.PLAYER_SHOOT_COOLDOWN -= dt
 
   def move(self, dt):
     forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -46,5 +49,6 @@ class Player(CircleShape):
     shot_velocity = pygame.Vector2(0,1)
     shot_velocity = shot_velocity.rotate(self.rotation)
     shot_velocity = shot_velocity * PLAYER_SHOT_SPEED
-
     shot.velocity = shot_velocity
+    
+    self.PLAYER_SHOOT_COOLDOWN = 0.3
